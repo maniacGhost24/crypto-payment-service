@@ -10,6 +10,6 @@ public class HealthController {
     
     @GetMapping("/health")
     public String health(){
-        return "Crypto payments API running";
+        return "Crypto Payments API Running";
     }
 }
