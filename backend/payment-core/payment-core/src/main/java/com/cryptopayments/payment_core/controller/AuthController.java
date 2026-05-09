@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cryptopayments.payment_core.dto.LoginRequest;
 import com.cryptopayments.payment_core.dto.SignupRequest;
 import com.cryptopayments.payment_core.entity.Merchant;
 import com.cryptopayments.payment_core.repository.MerchantRepository;
+import com.cryptopayments.payment_core.service.JwtService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +22,19 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    
+
     private final MerchantRepository merchantRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final JwtService jwtService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignupRequest request){
-        if(merchantRepository.findByEmail(request.getEmail()).isPresent()){
-            return ResponseEntity.badRequest().body("Email already exists");
+    public ResponseEntity<?> signUp(
+            @Valid @RequestBody SignupRequest request
+    ) {
 
+        if (merchantRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body("Email already exists");
         }
 
         Merchant merchant = Merchant.builder()
@@ -41,6 +46,34 @@ public class AuthController {
 
         merchantRepository.save(merchant);
 
-        return ResponseEntity.ok("Merchant Registered successfully");
+        return ResponseEntity.ok("Merchant registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+
+        Merchant merchant = merchantRepository
+                .findByEmail(request.getEmail())
+                .orElse(null);
+
+        if (merchant == null) {
+            return ResponseEntity.badRequest()
+                    .body("Invalid credentials");
+        }
+
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                merchant.getPasswordHash()
+        )) {
+
+            return ResponseEntity.badRequest()
+                    .body("Invalid credentials");
+        }
+
+        String token = jwtService.generateToken(merchant.getEmail());
+
+        return ResponseEntity.ok(token);
     }
 }
