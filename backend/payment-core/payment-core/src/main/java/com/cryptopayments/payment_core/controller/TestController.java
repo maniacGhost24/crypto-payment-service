@@ -13,4 +13,11 @@ public class TestController {
         return "Authenticated merchant: "
                 + authentication.getName();
     }
+
+    // @GetMapping("/api/api-key-test")
+    // public String apiKeyTest(
+    //     Authentication authentication
+    // ){
+    //     return authentication.getName();
+    // }
 }
