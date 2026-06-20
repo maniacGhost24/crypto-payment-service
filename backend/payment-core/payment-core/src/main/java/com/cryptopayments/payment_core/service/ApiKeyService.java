@@ -38,7 +38,7 @@ public class ApiKeyService {
 
         String prefix = rawKey.substring(0, 15);
 
-        String hashedKey = sha256(rawKey);
+        String hashedKey = hashApiKey(rawKey);
 
         ApiKey apiKey = ApiKey.builder()
                 .merchant(merchant)
@@ -57,7 +57,7 @@ public class ApiKeyService {
                 .build();
     }
 
-    private String sha256(String value) {
+    public String hashApiKey(String value) {
 
         try {
 
@@ -93,12 +93,33 @@ public class ApiKeyService {
     }
 
     public void revokeKey(
-        UUID keyId,
-        Merchant merchant
-    ){
+            UUID keyId,
+            Merchant merchant) {
         ApiKey apiKey = apiKeyRepository.findByIdAndMerchant(keyId, merchant).orElseThrow();
 
         apiKey.setRevoked(true);
         apiKeyRepository.save(apiKey);
+    }
+
+    public Merchant authenticateApiKey(String rawKey) {
+
+        String hashedKey = hashApiKey(rawKey);
+
+        ApiKey apiKey = apiKeyRepository
+                .findByHashedKey(hashedKey)
+                .orElse(null);
+
+        if (apiKey == null) {
+            return null;
+        }
+
+        if (apiKey.isRevoked()) {
+            return null;
+        }
+
+        apiKey.setLastUsedAt(Instant.now());
+        apiKeyRepository.save(apiKey);
+
+        return apiKey.getMerchant();
     }
 }
