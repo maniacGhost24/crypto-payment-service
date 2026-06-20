@@ -13,6 +13,8 @@ public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
 
     Optional<ApiKey> findByKeyPrefix(String keyPrefix);
 
+    Optional<ApiKey> findByHashedKey(String hashedKey);
+
     List<ApiKey> findByMerchant(Merchant merchant);
 
     Optional<ApiKey> findByIdAndMerchant(

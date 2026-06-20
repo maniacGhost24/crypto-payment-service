@@ -19,7 +19,7 @@ public class ApiKey {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "merchant_id", nullable = false)
     private Merchant merchant;
 
