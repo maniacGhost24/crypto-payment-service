@@ -2,13 +2,16 @@ package com.cryptopayments.payment_core.entity;
 
 import java.time.Instant;
 import java.util.UUID;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
 
 import lombok.*;
 
@@ -37,4 +40,11 @@ public class Merchant {
 
     @Column(nullable = false)
     private Instant createdAt;
+
+    @OneToMany(
+        mappedBy = "merchant",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private List<ApiKey> apiKeys;
 }
