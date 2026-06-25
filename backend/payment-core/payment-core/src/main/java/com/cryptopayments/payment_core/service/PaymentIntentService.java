@@ -20,67 +20,77 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PaymentIntentService {
 
-    private final PaymentIntentRepository paymentIntentRepository;
-    private final WalletService walletService;
+        private final PaymentIntentRepository paymentIntentRepository;
+        private final WalletService walletService;
 
-    public PaymentIntentResponse createPaymentIntent(
-            Merchant merchant,
-            CreatePaymentIntentRequest request) {
+        public PaymentIntentResponse createPaymentIntent(
+                        Merchant merchant,
+                        CreatePaymentIntentRequest request) {
 
-        Wallet wallet = walletService.reserveWallet();
+                Wallet wallet = walletService.reserveWallet();
 
-        PaymentIntent paymentIntent = PaymentIntent.builder()
-                .merchant(merchant)
-                .wallet(wallet)
-                .amount(request.getAmount())
-                .currency(request.getCurrency())
-                .status(PaymentIntentStatus.PENDING)
-                .createdAt(Instant.now())
-                .build();
+                PaymentIntent paymentIntent = PaymentIntent.builder()
+                                .merchant(merchant)
+                                .wallet(wallet)
+                                .amount(request.getAmount())
+                                .currency(request.getCurrency())
+                                .status(PaymentIntentStatus.PENDING)
+                                .createdAt(Instant.now())
+                                .build();
 
-        paymentIntentRepository.save(paymentIntent);
+                paymentIntentRepository.save(paymentIntent);
 
-        return toResponse(paymentIntent);
-    }
+                return toResponse(paymentIntent);
+        }
 
-    public List<PaymentIntentResponse> getPaymentIntents(
-            Merchant merchant) {
+        public List<PaymentIntentResponse> getPaymentIntents(
+                        Merchant merchant) {
 
-        return paymentIntentRepository
-                .findByMerchant(merchant)
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
+                return paymentIntentRepository
+                                .findByMerchant(merchant)
+                                .stream()
+                                .map(this::toResponse)
+                                .toList();
+        }
 
-    public PaymentIntentResponse getPaymentIntent(
-            UUID id,
-            Merchant merchant) {
+        public PaymentIntentResponse getPaymentIntent(
+                        UUID id,
+                        Merchant merchant) {
 
-        PaymentIntent paymentIntent = paymentIntentRepository
-                .findByIdAndMerchant(id, merchant)
-                .orElseThrow();
+                PaymentIntent paymentIntent = paymentIntentRepository
+                                .findByIdAndMerchant(id, merchant)
+                                .orElseThrow();
 
-        return toResponse(paymentIntent);
-    }
+                return toResponse(paymentIntent);
+        }
 
-    private PaymentIntentResponse toResponse(
-            PaymentIntent paymentIntent) {
+        private PaymentIntentResponse toResponse(
+                        PaymentIntent paymentIntent) {
 
-        return PaymentIntentResponse.builder()
-                .id(paymentIntent.getId())
-                .amount(paymentIntent.getAmount())
-                .currency(paymentIntent.getCurrency())
-                .status(paymentIntent.getStatus())
-                .createdAt(paymentIntent.getCreatedAt())
-                .walletAddress(
-                        paymentIntent.getWallet() != null
-                                ? paymentIntent.getWallet().getAddress()
-                                : null)
-                .network(
-                        paymentIntent.getWallet() != null
-                                ? paymentIntent.getWallet().getNetwork()
-                                : null)
-                .build();
-    }
+                Wallet wallet = paymentIntent.getWallet();
+
+                return PaymentIntentResponse.builder()
+                                .id(paymentIntent.getId())
+                                .amount(paymentIntent.getAmount())
+                                .currency(paymentIntent.getCurrency())
+                                .status(paymentIntent.getStatus())
+                                .createdAt(paymentIntent.getCreatedAt())
+                                .walletAddress(wallet != null ? wallet.getAddress() : null)
+                                .network(wallet != null ? wallet.getNetwork() : null)
+                                .paymentUri(wallet != null ? buildPaymentUri(paymentIntent) : null)
+                                .build();
+        }
+
+        private String buildPaymentUri(
+                        PaymentIntent paymentIntent) {
+
+                Wallet wallet = paymentIntent.getWallet();
+
+                return "ethereum:"
+                                + wallet.getAddress()
+                                + "?value="
+                                + paymentIntent.getAmount()
+                                + "&token="
+                                + paymentIntent.getCurrency();
+        }
 }
