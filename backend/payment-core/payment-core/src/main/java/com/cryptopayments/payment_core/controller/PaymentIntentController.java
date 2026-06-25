@@ -10,6 +10,7 @@ import com.cryptopayments.payment_core.entity.Merchant;
 import com.cryptopayments.payment_core.repository.MerchantRepository;
 // import com.cryptopayments.payment_core.repository.PaymentIntentRepository;
 import com.cryptopayments.payment_core.service.PaymentIntentService;
+import com.cryptopayments.payment_core.service.QRCodeService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class PaymentIntentController {
         // private final PaymentIntentRepository paymentIntentRepository;
         private final MerchantRepository merchantRepository;
         private final PaymentIntentService paymentIntentService;
+
+        private final QRCodeService qrCodeService;
 
         // PaymentIntentController(PaymentIntentRepository paymentIntentRepository) {
         // this.paymentIntentRepository = paymentIntentRepository;
@@ -67,5 +70,28 @@ public class PaymentIntentController {
 
                 return ResponseEntity.ok(
                                 paymentIntentService.getPaymentIntent(id, merchant));
+        }
+
+        @GetMapping("/{id}/qr")
+        public ResponseEntity<byte[]> getQrCode(
+                        @PathVariable UUID id,
+                        @RequestParam(defaultValue = "250") int size,
+                        Authentication authentication) {
+
+                Merchant merchant = merchantRepository
+                                .findByEmail(authentication.getName())
+                                .orElseThrow();
+
+                String paymentUri = paymentIntentService.getPaymentUri(
+                                id,
+                                merchant);
+
+                byte[] qr = qrCodeService.generateQrCode(
+                                paymentUri,
+                                size);
+
+                return ResponseEntity.ok()
+                                .header("Content-Type", "image/png")
+                                .body(qr);
         }
 }
