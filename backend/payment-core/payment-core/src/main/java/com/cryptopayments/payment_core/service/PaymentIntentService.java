@@ -93,4 +93,15 @@ public class PaymentIntentService {
                                 + "&token="
                                 + paymentIntent.getCurrency();
         }
+
+        public String getPaymentUri(
+                        UUID id,
+                        Merchant merchant) {
+
+                PaymentIntent paymentIntent = paymentIntentRepository
+                                .findByIdAndMerchant(id, merchant)
+                                .orElseThrow();
+
+                return buildPaymentUri(paymentIntent);
+        }
 }
