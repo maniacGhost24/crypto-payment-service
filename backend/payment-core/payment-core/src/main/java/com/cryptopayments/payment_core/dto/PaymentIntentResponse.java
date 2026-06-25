@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.cryptopayments.payment_core.entity.Network;
 import com.cryptopayments.payment_core.entity.PaymentIntentStatus;
 
 import lombok.Builder;
@@ -18,4 +19,7 @@ public class PaymentIntentResponse {
     private String currency;
     private PaymentIntentStatus status;
     private Instant createdAt;
+    private String walletAddress;
+
+    private Network network;
 }
