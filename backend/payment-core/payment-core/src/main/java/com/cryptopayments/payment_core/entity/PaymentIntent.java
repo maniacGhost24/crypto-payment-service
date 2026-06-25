@@ -23,6 +23,10 @@ public class PaymentIntent {
     @JoinColumn(name = "merchant_id", nullable = false)
     private Merchant merchant;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
+
     @Column(nullable = false, precision = 19, scale = 8)
     private BigDecimal amount;
 
