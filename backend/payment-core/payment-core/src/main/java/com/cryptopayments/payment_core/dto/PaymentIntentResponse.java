@@ -20,6 +20,6 @@ public class PaymentIntentResponse {
     private PaymentIntentStatus status;
     private Instant createdAt;
     private String walletAddress;
-
     private Network network;
+    private String paymentUri;
 }
