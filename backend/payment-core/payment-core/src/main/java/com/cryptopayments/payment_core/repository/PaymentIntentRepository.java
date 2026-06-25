@@ -2,6 +2,7 @@ package com.cryptopayments.payment_core.repository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,4 +15,6 @@ public interface PaymentIntentRepository
     List<PaymentIntent> findByMerchant(
             Merchant merchant
     );
+
+    Optional<PaymentIntent> findByIdAndMerchant(UUID id, Merchant merchant);
 }
