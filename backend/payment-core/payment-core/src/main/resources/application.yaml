@@ -18,7 +18,10 @@ spring:
     show-sql: true
 
 base:
-  rpc-url: ${BASE_RPC_URL}
+  rpc-url: ${BASE_RPC_URL:http://localhost:8545}
+
+usdc:
+  contract: ${USDC_CONTRACT:0x0000000000000000000000000000000000000000}
 
 server:
   port: 8080
