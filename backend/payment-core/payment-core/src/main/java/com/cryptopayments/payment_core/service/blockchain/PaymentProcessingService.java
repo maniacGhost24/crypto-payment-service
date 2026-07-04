@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 public class PaymentProcessingService {
 
     private final PaymentMatchingService paymentMatchingService;
+    private final PaymentStateService paymentStateService;
 
     public void process(
             BlockchainTransfer transfer) {
@@ -31,5 +32,9 @@ public class PaymentProcessingService {
                 + transfer.getAmount());
         System.out.println("==============================");
         System.out.println();
+
+        paymentStateService.markPaid(
+                result.getPaymentIntent(),
+                transfer);
     }
 }
