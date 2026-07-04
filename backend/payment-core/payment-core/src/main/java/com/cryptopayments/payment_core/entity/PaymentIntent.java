@@ -41,4 +41,9 @@ public class PaymentIntent {
     private Instant createdAt;
 
     private Instant paidAt;
+
+    @Column(length = 66)
+    private String transactionHash;
+
+    private Long blockNumber;
 }
