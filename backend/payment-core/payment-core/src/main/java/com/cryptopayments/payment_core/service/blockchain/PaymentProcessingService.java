@@ -39,12 +39,20 @@ public class PaymentProcessingService {
                                 result.getPaymentIntent(),
                                 transfer);
 
-                if (updated) {
+        System.out.println();
+        System.out.println("==============================");
+        System.out.println("PAYMENT MATCHED");
+        System.out.println("Payment Intent : "
+                + result.getPaymentIntent().getId());
+        System.out.println("Wallet         : "
+                + transfer.getTo());
+        System.out.println("Amount         : "
+                + transfer.getAmount());
+        System.out.println("==============================");
+        System.out.println();
 
-                        webhookService.send(
-                                        result.getPaymentIntent());
-
-                }
-
-        }
+        paymentStateService.markPaid(
+                result.getPaymentIntent(),
+                transfer);
+    }
 }
