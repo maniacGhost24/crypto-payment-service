@@ -10,36 +10,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PaymentProcessingService {
 
-        private final PaymentMatchingService paymentMatchingService;
-        private final PaymentStateService paymentStateService;
-        private final WebhookService webhookService;
+    private final PaymentMatchingService paymentMatchingService;
+    private final PaymentStateService paymentStateService;
+    private final WebhookService webhookService;
 
-        public void process(
-                        BlockchainTransfer transfer) {
+    public void process(BlockchainTransfer transfer) {
 
-                PaymentMatchResult result = paymentMatchingService.match(transfer);
+        PaymentMatchResult result =
+                paymentMatchingService.match(transfer);
 
-                if (!result.isMatched()) {
-                        return;
-                }
+        if (!result.isMatched()) {
+            return;
+        }
 
-                System.out.println();
-                System.out.println("==============================");
-                System.out.println("PAYMENT MATCHED");
-                System.out.println("Payment Intent : "
-                                + result.getPaymentIntent().getId());
-                System.out.println("Wallet         : "
-                                + transfer.getTo());
-                System.out.println("Amount         : "
-                                + transfer.getAmount());
-                System.out.println("==============================");
-                System.out.println();
-
-                paymentStateService.markPaid(
-                        result.getPaymentIntent(),
-                        transfer);
-
-<<<<<<< HEAD
         System.out.println();
         System.out.println("==============================");
         System.out.println("PAYMENT MATCHED");
@@ -55,11 +38,8 @@ public class PaymentProcessingService {
         paymentStateService.markPaid(
                 result.getPaymentIntent(),
                 transfer);
-    }
-=======
-                webhookService.send(
-                        result.getPaymentIntent());
 
-        }
->>>>>>> af60e1f (fix: PaymentProcessingService fix)
+        webhookService.send(
+                result.getPaymentIntent());
+    }
 }
