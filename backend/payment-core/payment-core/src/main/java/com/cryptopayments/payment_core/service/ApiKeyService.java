@@ -117,8 +117,8 @@ public class ApiKeyService {
             return null;
         }
 
-        apiKey.setLastUsedAt(Instant.now());
-        apiKeyRepository.save(apiKey);
+        // apiKey.setLastUsedAt(Instant.now());
+        // apiKeyRepository.save(apiKey);
 
         return apiKey.getMerchant();
     }
