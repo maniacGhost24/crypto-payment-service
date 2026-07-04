@@ -2,6 +2,8 @@ package com.cryptopayments.payment_core.service.blockchain;
 
 import org.springframework.stereotype.Service;
 
+import com.cryptopayments.payment_core.service.WebhookService;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -10,9 +12,9 @@ public class PaymentProcessingService {
 
     private final PaymentMatchingService paymentMatchingService;
     private final PaymentStateService paymentStateService;
+    private final WebhookService webhookService;
 
-    public void process(
-            BlockchainTransfer transfer) {
+    public void process(BlockchainTransfer transfer) {
 
         PaymentMatchResult result =
                 paymentMatchingService.match(transfer);
@@ -36,5 +38,8 @@ public class PaymentProcessingService {
         paymentStateService.markPaid(
                 result.getPaymentIntent(),
                 transfer);
+
+        webhookService.send(
+                result.getPaymentIntent());
     }
 }
