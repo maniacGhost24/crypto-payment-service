@@ -16,14 +16,14 @@ import jakarta.persistence.CascadeType;
 import lombok.*;
 
 @Entity
-@Table(name="merchants")
+@Table(name = "merchants")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Merchant {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -37,14 +37,12 @@ public class Merchant {
     @Column(nullable = false)
     private String businessName;
 
-
     @Column(nullable = false)
     private Instant createdAt;
 
-    @OneToMany(
-        mappedBy = "merchant",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApiKey> apiKeys;
+
+    @Column
+    private String webhookUrl;
 }

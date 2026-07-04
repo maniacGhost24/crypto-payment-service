@@ -10,33 +10,27 @@ import com.cryptopayments.payment_core.entity.PaymentIntentStatus;
 import com.cryptopayments.payment_core.repository.PaymentIntentRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Transactional
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentStateService {
 
         private final PaymentIntentRepository paymentIntentRepository;
 
-        public void markPaid(
+        @Transactional
+        public boolean markPaid(
                         PaymentIntent paymentIntent,
                         BlockchainTransfer transfer) {
 
                 if (paymentIntent.getStatus() == PaymentIntentStatus.PAID) {
-                        return;
+                        return false;
                 }
 
                 paymentIntent.setStatus(PaymentIntentStatus.PAID);
                 paymentIntent.setPaidAt(Instant.now());
-
-                System.out.println();
-                System.out.println("==============================");
-                System.out.println("PAYMENT UPDATED");
-                System.out.println("Status : PAID");
-                System.out.println("Tx Hash: " + transfer.getTransactionHash());
-                System.out.println("==============================");
-                System.out.println();
-
                 paymentIntent.setTransactionHash(
                                 transfer.getTransactionHash());
 
@@ -45,8 +39,9 @@ public class PaymentStateService {
 
                 paymentIntentRepository.save(paymentIntent);
 
-                System.out.println(
-                                "Payment marked as PAID: "
-                                                + paymentIntent.getId());
+                log.info("Payment {} marked as PAID",
+                                paymentIntent.getId());
+
+                return true;
         }
 }
