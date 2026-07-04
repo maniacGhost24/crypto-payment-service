@@ -35,10 +35,11 @@ public class PaymentProcessingService {
                 System.out.println("==============================");
                 System.out.println();
 
-                boolean updated = paymentStateService.markPaid(
-                                result.getPaymentIntent(),
-                                transfer);
+                paymentStateService.markPaid(
+                        result.getPaymentIntent(),
+                        transfer);
 
+<<<<<<< HEAD
         System.out.println();
         System.out.println("==============================");
         System.out.println("PAYMENT MATCHED");
@@ -55,4 +56,10 @@ public class PaymentProcessingService {
                 result.getPaymentIntent(),
                 transfer);
     }
+=======
+                webhookService.send(
+                        result.getPaymentIntent());
+
+        }
+>>>>>>> af60e1f (fix: PaymentProcessingService fix)
 }
