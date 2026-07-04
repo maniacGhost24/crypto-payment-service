@@ -11,6 +11,10 @@ import com.cryptopayments.payment_core.service.blockchain.PaymentReplayService;
 
 import lombok.RequiredArgsConstructor;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
+
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class DevController {

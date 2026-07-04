@@ -17,6 +17,12 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Payment Intents", description = "Create and manage payment intents")
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping("/api/payment-intents")
 @RequiredArgsConstructor
@@ -32,6 +38,7 @@ public class PaymentIntentController {
         // this.paymentIntentRepository = paymentIntentRepository;
         // }
 
+        @Operation(summary = "Create Payment Intent")
         @PostMapping
         public ResponseEntity<PaymentIntentResponse> create(
                         Authentication authentication,
@@ -47,6 +54,7 @@ public class PaymentIntentController {
                                                 request));
         }
 
+        @Operation(summary = "List Payment Intents")
         @GetMapping
         public ResponseEntity<List<PaymentIntentResponse>> getPaymentIntents(
                         Authentication authentication) {
@@ -59,6 +67,7 @@ public class PaymentIntentController {
                                 paymentIntentService.getPaymentIntents(merchant));
         }
 
+        @Operation(summary = "Get Payment Intent")
         @GetMapping("/{id}")
         public ResponseEntity<PaymentIntentResponse> getPaymentIntent(
                         @PathVariable UUID id,
@@ -72,6 +81,7 @@ public class PaymentIntentController {
                                 paymentIntentService.getPaymentIntent(id, merchant));
         }
 
+        @Operation(summary = "Generate QR Code")
         @GetMapping("/{id}/qr")
         public ResponseEntity<byte[]> getQrCode(
                         @PathVariable UUID id,
