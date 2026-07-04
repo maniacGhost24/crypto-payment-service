@@ -17,15 +17,21 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(
+        name = "API Keys",
+        description = "Manage merchant API keys")
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping("/api/keys")
 @RequiredArgsConstructor
 public class ApiKeyController {
     private final ApiKeyService apiKeyService;
     private final MerchantRepository merchantRepository;
-
+    @Operation(summary = "Generate API Key")
     @PostMapping
     public ResponseEntity<CreateApiKeyResponse> createKey(
             Authentication authentication,
@@ -43,7 +49,7 @@ public class ApiKeyController {
 
         return ResponseEntity.ok(response);
     }
-
+    @Operation(summary = "List API Keys")
     @GetMapping
     public ResponseEntity<List<ApiKeySummaryResponse>> getKeys(
             Authentication authentication) {
@@ -57,7 +63,7 @@ public class ApiKeyController {
         return ResponseEntity.ok(
                 apiKeyService.getKeys(merchant));
     }
-
+    @Operation(summary = "Revoke API Key")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> revokeKey(
         @PathVariable UUID id,

@@ -14,6 +14,13 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+
+@Tag(
+        name = "Blockchain",
+        description = "Blockchain monitoring APIs")
 @RestController
 @RequiredArgsConstructor
 public class BlockchainController {
@@ -22,20 +29,20 @@ public class BlockchainController {
     private final BlockchainCursorService blockchainCursorService;
 
     private final UsdcTransferService usdcTransferService;
-
+    @Operation(summary = "Get Latest Block")
     @GetMapping("/api/blockchain/latest-block")
     public BigInteger latestBlock() {
 
         return blockchainService.getLatestBlockNumber();
 
     }
-
+    @Operation(summary = "Get Observer Cursor")
     @GetMapping("/api/blockchain/cursor")
     public BigInteger cursor() {
 
         return blockchainCursorService.getLastProcessedBlock();
     }
-
+    @Operation(summary = "Test USDC Transfer Scan")
     @GetMapping("/api/blockchain/test-transfers")
     public String testTransfers() {
 

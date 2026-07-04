@@ -18,6 +18,13 @@ import com.cryptopayments.payment_core.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+
+@Tag(
+        name = "Authentication",
+        description = "Merchant authentication APIs")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -27,6 +34,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+
+    @Operation(summary = "Register Merchant")
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(
             @Valid @RequestBody SignupRequest request
@@ -48,7 +57,7 @@ public class AuthController {
 
         return ResponseEntity.ok("Merchant registered successfully");
     }
-
+    @Operation(summary = "Merchant Login")
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @Valid @RequestBody LoginRequest request
